@@ -1,0 +1,23 @@
+{
+    "name": "iglesias/image-converter",
+    "description": "PHP Image Converter with GD",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Iglesias\\ImageConverter\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Igor Iglesias",
+            "email": "contato@igoriglesias.com"
+        }
+    ],
+    "version": "0.1.0",
+    "dependencies": {
+        "php": ">=7.4"
+    },
+    "minimum-stability": "stable",
+    "require": {}
+}
