@@ -3,6 +3,8 @@
     "description": "PHP Image Converter with GD",
     "type": "library",
     "license": "MIT",
+    "version": "0.1.1",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "Iglesias\\ImageConverter\\": "src/"
@@ -14,10 +16,13 @@
             "email": "contato@igoriglesias.com"
         }
     ],
-    "version": "0.1.1",
-    "dependencies": {
-        "php": ">=7.4"
+    "config": {
+        "plataform": {
+            "php": ">=7.4",
+            "ext-gd": "*"
+        }
     },
-    "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "php": ">=7.4"
+    }
 }

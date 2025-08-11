@@ -5,6 +5,13 @@ use Exception;
 use GdImage;
 use Throwable;
 
+/**
+ * Utility class for converting images between formats using the GD extension.
+ * Supports loading from various formats, resizing, quality adjustment, and output to base64 or disk.
+ * Ensures compatibility by checking GD support for formats like JPEG, PNG, GIF, WebP, BMP, and AVIF.
+ * 
+ * @author [Igor Iglesias] (contato@igoriglesias.com)
+ */
 class ImageConverter {
 
     private const array ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp', 'image/avif'];
@@ -34,6 +41,20 @@ class ImageConverter {
     ];
     private static ?array $types_supported = null;
 
+    /**
+     * Converts an image to the specified format and returns it as a base64 string.
+     * 
+     * Loads the image from disk, applies resizing if specified, adjusts quality, and converts.
+     * Useful for embedding images in HTML/CSS (e.g., <img src="data:...">).
+     * 
+     * @param string $file_path Absolute path to the source image file.
+     * @param string $format Output format (e.g., 'webp', 'jpeg'). Default: 'webp'. Will be prefixed with 'image/'.
+     * @param int $quality Quality from 0-100 (normalized by format). Default: 80. Ignored for unsupported formats (GIF, BMP).
+     * @param int $width Desired width for resizing (0 to ignore). Must be used with $height > 0.
+     * @param int $height Desired height for resizing (0 to ignore). Must be used with $width > 0.
+     * @return string Base64 string in the format 'data:image/format;base64,...'.
+     * @throws Exception If GD is not loaded, format is unsupported, file is invalid, or conversion fails.
+     */
     public static function convertToBase64(
         string $file_path,
         string $format='webp',
@@ -58,6 +79,21 @@ class ImageConverter {
         return 'data:'.$format.';base64,'.$base64;
     }
 
+    /**
+     * Converts an image to the specified format and saves it to disk.
+     * 
+     * Similar to convertToBase64, but writes the result to a file instead of returning base64.
+     * Overwrites the file if it exists.
+     * 
+     * @param string $file_path Absolute path to the source image file.
+     * @param string $save_path Absolute path to save the converted image (include extension, e.g., '/path/image.webp').
+     * @param string $format Output format (e.g., 'webp', 'jpeg'). Default: 'webp'. Will be prefixed with 'image/'.
+     * @param int $quality Quality from 0-100 (normalized by format). Default: 80. Ignored for unsupported formats.
+     * @param int $width Desired width for resizing (0 to ignore).
+     * @param int $height Desired height for resizing (0 to ignore).
+     * @return void
+     * @throws Exception If GD is not loaded, format is unsupported, file is invalid, or conversion/saving fails.
+     */
     public static function convertToDisk(
         string $file_path,
         string $save_path,
@@ -75,6 +111,14 @@ class ImageConverter {
         }
     }
 
+    /**
+     * Returns the MIME types supported by GD in the current PHP installation.
+     * 
+     * Queries gd_info() once and caches the result for performance.
+     * Filters only types in ALLOWED_TYPES.
+     * 
+     * @return array List of supported MIME strings (e.g., ['image/jpeg', 'image/png']).
+     */
     public static function getTypesSupported(): array {
         if (self::$types_supported !== null) {
             return self::$types_supported;
