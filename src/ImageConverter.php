@@ -169,16 +169,46 @@ class ImageConverter {
         int $quality,
         int $width,
         int $height): array {
-        $format = 'image/'.strtolower($format);
+        $format = 'image/' . strtolower($format);
         self::__checkGd();
         self::__checkFormat($format);
         $type = self::__checkFile($file_path);
         $quality = self::__getCalculatedQuality($quality, $format);
 
+        // Carrega a imagem via GD
         $image = self::GD_IMAGE_LOADER[$type]($file_path);
 
         if ($width > 0 && $height > 0) {
-            $image = imagescale($image, $width, $height, IMG_BICUBIC_FIXED);
+            $origWidth = imagesx($image);
+            $origHeight = imagesy($image);
+
+            // Calcula escala para cobrir a área alvo (como -resize ^)
+            $scale = max($width / $origWidth, $height / $origHeight);
+            $newWidth = (int) ceil($origWidth * $scale);
+            $newHeight = (int) ceil($origHeight * $scale);
+
+            // Redimensiona
+            $resized = imagescale($image, $newWidth, $newHeight, IMG_BICUBIC_FIXED);
+            imagedestroy($image); // libera a original
+
+            // Calcula offset central para crop
+            $x = (int)(($newWidth - $width) / 2);
+            $y = (int)(($newHeight - $height) / 2);
+
+            // Faz o crop central
+            $cropped = imagecrop($resized, [
+                'x' => $x,
+                'y' => $y,
+                'width' => $width,
+                'height' => $height
+            ]);
+            imagedestroy($resized); // libera a redimensionada
+
+            if ($cropped === false) {
+                throw new Exception("Failed to crop image");
+            }
+
+            $image = $cropped;
         }
 
         if (!$image) {

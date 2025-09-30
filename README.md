@@ -86,4 +86,4 @@ try {
 
 ## License
 
-MIT License. See LICENSE file (create one if missing).
+MIT License. See LICENSE file.
