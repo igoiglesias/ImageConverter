@@ -3,7 +3,7 @@
     "description": "PHP Image Converter with GD",
     "type": "library",
     "license": "MIT",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
